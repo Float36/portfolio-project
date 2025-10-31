@@ -3,7 +3,7 @@ from rest_framework import viewsets, permissions
 from .models import Technology, Project, Experience, Education
 from .serializers import (
     TechnologySerializer, ProjectSerializer,
-    ExperienceSerializer, EducationSerializers
+    ExperienceSerializer, EducationSerializer
 )
 
 
@@ -30,7 +30,7 @@ class ExperienceViewSet(viewsets.ModelViewSet):
 
 class EducationViewSet(viewsets.ModelViewSet):
     queryset = Education.objects.all()
-    serializer_class = EducationSerializers
+    serializer_class = EducationSerializer
     permission_classes = [permissions.AllowAny]
 
 
