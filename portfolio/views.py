@@ -13,24 +13,57 @@ class TechnologyViewSet(viewsets.ModelViewSet):
     """
     queryset = Technology.objects.all()
     serializer_class = TechnologySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        """
+        Автоматично прив'язуємо профіль залогіненого користувача
+        до нового проєкту.
+        """
+        serializer.save(profile=self.request.user.profile)
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        """
+        Автоматично прив'язуємо профіль залогіненого користувача
+        до нового проєкту.
+        """
+        serializer.save(profile=self.request.user.profile)
 
 
 class ExperienceViewSet(viewsets.ModelViewSet):
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        """
+        Автоматично прив'язуємо профіль залогіненого користувача
+        до нового проєкту.
+        """
+        serializer.save(profile=self.request.user.profile)
 
 
 class EducationViewSet(viewsets.ModelViewSet):
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def perform_create(self, serializer):
+        """
+        Автоматично прив'язуємо профіль залогіненого користувача
+        до нового проєкту.
+        """
+        serializer.save(profile=self.request.user.profile)
+
+
+
+
+
 
 

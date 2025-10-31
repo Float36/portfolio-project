@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_spectacular',
     'users.apps.UsersConfig',
     'portfolio.apps.PortfolioConfig',
 ]
@@ -135,4 +136,22 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Portfolio API',
+    'DESCRIPTION': 'API-документація для персонального портфоліо',
+    'VERSION': '1.0.0',
+    # Вказуємо drf-spectacular, як ми використовуємо аутентифікацію
+    'COMPONENT_SCHEMES': {
+        'simple-jwt': {
+            'type': 'http',
+            'scheme': 'bearer',
+            'bearerFormat': 'JWT',
+        }
+    },
+    'SECURITY': [{'simple-jwt': []}], # Глобально застосовуємо її
 }
