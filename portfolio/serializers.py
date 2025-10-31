@@ -34,11 +34,12 @@ class ExperienceSerializer(serializers.ModelSerializer):
         ]
 
 
-class EducationSerializers(serializers.ModelSerializer):
-    model = Education
-    fields = [
-        'id', 'institution', 'degree', 'field_of_study',
-        'start_date', 'end_date'
-    ]
+class EducationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Education
+        fields = [
+            'id', 'institution', 'degree', 'field_of_study',
+            'start_date', 'end_date'
+        ]
 
 
