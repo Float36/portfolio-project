@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
+    """
+    Model for user profile
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True, verbose_name="Про себе")
     profile_picture = models.ImageField(upload_to="profile_pics/", null=True, blank=True, verbose_name="Фото профілю")
