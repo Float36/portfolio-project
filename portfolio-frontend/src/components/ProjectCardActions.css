@@ -1,0 +1,14 @@
+/* Inherit existing ProjectCard styles */
+@import './ProjectCard.css';
+
+/* Actions container injected via children */
+.project-actions-container {
+    margin-top: 15px;
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+}
+
+.project-actions {
+    display: flex;
+    gap: 10px;
+}

@@ -1,9 +1,12 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 import requests
 from urllib.parse import urlparse
+from django.db.models import Q
+from users.permissions import IsOwnerOrReadOnly
 
 from .models import Technology, Project, Experience, Education
 from .serializers import (
@@ -28,10 +31,33 @@ class TechnologyViewSet(viewsets.ModelViewSet):
         serializer.save(profile=self.request.user.profile)
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 15
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class ProjectViewSet(viewsets.ModelViewSet):
-    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['views', 'created_at', 'title']
+    ordering = ['-views', '-created_at']
+
+    def get_queryset(self):
+        queryset = Project.objects.all()
+        
+        # Filtering by username
+        username = self.request.query_params.get('username')
+        if username is not None:
+            queryset = queryset.filter(profile__user__username=username)
+
+        # Filtering by search query (title)
+        search_query = self.request.query_params.get('search')
+        if search_query:
+            queryset = queryset.filter(title__icontains=search_query)
+
+        return queryset
 
     def perform_create(self, serializer):
         """
@@ -39,6 +65,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
         до нового проєкту.
         """
         serializer.save(profile=self.request.user.profile)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
+    def increment_views(self, request, pk=None):
+        project = self.get_object()
+        project.views += 1
+        project.save()
+        return Response({'views': project.views}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def sync_github(self, request):
@@ -52,7 +85,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         github_url = profile.github_url
         if not github_url:
             return Response(
-                {"error": "Будь ласка, додайте 'github_url' до вашого профілю."},
+                {"error": "Будь ласка, додайте посилання на ваш GitHub до вашого профілю."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -121,7 +154,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class ExperienceViewSet(viewsets.ModelViewSet):
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
         """
@@ -134,7 +167,7 @@ class ExperienceViewSet(viewsets.ModelViewSet):
 class EducationViewSet(viewsets.ModelViewSet):
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     
     def perform_create(self, serializer):
         """

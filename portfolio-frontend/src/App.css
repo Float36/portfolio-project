@@ -1,0 +1,81 @@
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 100px;
+  gap: 50px;
+}
+
+.hero-text h1 {
+  font-size: 4rem;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+
+.highlight {
+  color: var(--accent);
+}
+
+.hero-text h2 {
+  font-size: 2rem;
+  color: var(--text-muted);
+  margin-bottom: 30px;
+}
+
+.hero-text p {
+  max-width: 500px;
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  color: var(--text-muted);
+}
+
+.hero-btns {
+  display: flex;
+  gap: 20px;
+}
+
+.avatar-circle {
+  width: 250px;
+  height: 250px;
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-dark));
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  font-weight: bold;
+  color: var(--accent);
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 80px;
+  padding-bottom: 50px;
+}
+
+.feature-card {
+  background-color: var(--bg-secondary);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  transition: border-color 0.3s;
+}
+
+.feature-card:hover {
+  border-color: var(--accent);
+}
+
+.feature-card h3 {
+  color: var(--accent);
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.feature-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}

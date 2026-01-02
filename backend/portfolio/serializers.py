@@ -14,6 +14,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         а повні об'єкти (завдяки 'TechnologySerializer(many=True)').
         """
     technologies = TechnologySerializer(many=True, read_only=True)
+    username = serializers.CharField(source='profile.user.username', read_only=True)
+    profile_picture = serializers.ImageField(source='profile.profile_picture', read_only=True)
 
     class Meta:
         model = Project
@@ -21,9 +23,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         # і так належатимуть одному профілю.
         # Ми будемо фільтрувати за профілем у View.
         fields = [
-            'id', 'title', 'description', 'image', 'github_link',
-            'live_link', 'created_at', 'technologies'
+            'id', 'profile', 'username', 'profile_picture', 'title', 'description', 'image', 'github_link',
+            'live_link', 'views', 'created_at', 'technologies'
         ]
+        extra_kwargs = {
+            'profile': {'read_only': True},
+            'views': {'read_only': True}
+        }
 
 
 class ExperienceSerializer(serializers.ModelSerializer):

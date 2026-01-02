@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/v1/', include('config.api_router')),
+    path('api/v1/', include('users.urls')),
 
     # Endpoints for JWT
     path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -22,3 +23,9 @@ urlpatterns = [
 
     path('api/v1/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

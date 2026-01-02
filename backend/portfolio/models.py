@@ -30,6 +30,7 @@ class Project(models.Model):
     github_link = models.URLField(max_length=255, null=True, blank=True, verbose_name="Посилання на GitHub")
     live_link = models.URLField(max_length=255, null=True, blank=True, verbose_name="Посилання на сайт")
     technologies = models.ManyToManyField(Technology, related_name="projects", verbose_name="Технології")
+    views = models.PositiveIntegerField(default=0, verbose_name="Перегляди")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
 
     def __str__(self):

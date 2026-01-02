@@ -1,0 +1,28 @@
+.auth-container {
+  max-width: 400px;
+  margin: 100px auto;
+  background: var(--bg-secondary);
+  padding: 40px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-form input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-dark);
+  color: white;
+}
+
+.error-msg {
+  color: #ff4d4d;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
