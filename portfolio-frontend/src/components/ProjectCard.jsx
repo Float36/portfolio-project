@@ -79,6 +79,15 @@ const ProjectCard = ({ project, children }) => {
 
           <p>{truncatedDescription || "Опис відсутній..."}</p>
 
+          {/* Technology Tags on Card */}
+          {project.technologies && project.technologies.length > 0 && (
+            <div className="project-card-technologies">
+              {project.technologies.slice(0, 4).map(tech => (
+                <span key={tech.id} className="project-tech-tag">{tech.name}</span>
+              ))}
+            </div>
+          )}
+
           <div className="project-links">
             <a href={project.github_link} target="_blank" rel="noreferrer" className="project-link" onClick={e => e.stopPropagation()}>GitHub</a>
             {project.live_link && (

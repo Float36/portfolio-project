@@ -17,18 +17,13 @@ from .serializers import (
 
 class TechnologyViewSet(viewsets.ModelViewSet):
     """
-    Full CRUD
+    Full CRUD with search functionality
     """
     queryset = Technology.objects.all()
     serializer_class = TechnologySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def perform_create(self, serializer):
-        """
-        Автоматично прив'язуємо профіль залогіненого користувача
-        до нового проєкту.
-        """
-        serializer.save(profile=self.request.user.profile)
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 
 class StandardResultsSetPagination(PageNumberPagination):

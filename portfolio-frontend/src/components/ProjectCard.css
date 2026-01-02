@@ -76,6 +76,23 @@
   color: var(--secondary-color);
 }
 
+/* Technology Tags on Card */
+.project-card-technologies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.project-tech-tag {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;

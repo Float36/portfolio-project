@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './ProjectModal.css';
 
 const ProjectModal = ({ project = null, onClose, onSave }) => {
@@ -11,6 +12,12 @@ const ProjectModal = ({ project = null, onClose, onSave }) => {
 
     const [errors, setErrors] = useState({});
 
+    // Technology states
+    const [selectedTechnologies, setSelectedTechnologies] = useState([]);
+    const [techSearch, setTechSearch] = useState('');
+    const [techSuggestions, setTechSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
     useEffect(() => {
         if (project) {
             setFormData({
@@ -19,6 +26,8 @@ const ProjectModal = ({ project = null, onClose, onSave }) => {
                 github_link: project.github_link || '',
                 live_link: project.live_link || ''
             });
+            // Load existing technologies
+            setSelectedTechnologies(project.technologies || []);
         } else {
             setFormData({
                 title: '',
@@ -26,9 +35,34 @@ const ProjectModal = ({ project = null, onClose, onSave }) => {
                 github_link: '',
                 live_link: ''
             });
+            setSelectedTechnologies([]);
         }
         setErrors({});
     }, [project]);
+
+    // Search technologies
+    useEffect(() => {
+        const searchTechnologies = async () => {
+            if (techSearch.trim().length < 1) {
+                setTechSuggestions([]);
+                return;
+            }
+
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/api/v1/technologies/?search=${techSearch}`);
+                // Filter out already selected technologies
+                const filtered = response.data.filter(
+                    tech => !selectedTechnologies.some(selected => selected.id === tech.id)
+                );
+                setTechSuggestions(filtered);
+            } catch (err) {
+                console.error('Error searching technologies:', err);
+            }
+        };
+
+        const debounce = setTimeout(searchTechnologies, 300);
+        return () => clearTimeout(debounce);
+    }, [techSearch, selectedTechnologies]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,6 +74,17 @@ const ProjectModal = ({ project = null, onClose, onSave }) => {
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
+    };
+
+    const addTechnology = (tech) => {
+        setSelectedTechnologies(prev => [...prev, tech]);
+        setTechSearch('');
+        setTechSuggestions([]);
+        setShowSuggestions(false);
+    };
+
+    const removeTechnology = (techId) => {
+        setSelectedTechnologies(prev => prev.filter(t => t.id !== techId));
     };
 
     const validateForm = () => {
@@ -57,11 +102,17 @@ const ProjectModal = ({ project = null, onClose, onSave }) => {
             return;
         }
 
+        // Prepare data with technology IDs
+        const dataToSend = {
+            ...formData,
+            technology_ids: selectedTechnologies.map(t => t.id)
+        };
+
         // If editing, pass id + data. If creating, pass data.
         if (project) {
-            onSave(project.id, formData);
+            onSave(project.id, dataToSend);
         } else {
-            onSave(formData);
+            onSave(dataToSend);
         }
     };
 
@@ -119,6 +170,53 @@ const ProjectModal = ({ project = null, onClose, onSave }) => {
                             value={formData.live_link}
                             onChange={handleChange}
                         />
+                    </div>
+
+                    {/* Technology Selection */}
+                    <div className="form-group">
+                        <label htmlFor="tech_search">Технології</label>
+                        <div className="tech-input-wrapper">
+                            <input
+                                type="text"
+                                id="tech_search"
+                                placeholder="Пошук технологій..."
+                                value={techSearch}
+                                onChange={(e) => setTechSearch(e.target.value)}
+                                onFocus={() => setShowSuggestions(true)}
+                                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                            />
+                            {showSuggestions && techSuggestions.length > 0 && (
+                                <div className="tech-suggestions">
+                                    {techSuggestions.map(tech => (
+                                        <div
+                                            key={tech.id}
+                                            className="tech-suggestion-item"
+                                            onClick={() => addTechnology(tech)}
+                                        >
+                                            {tech.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Selected Technologies */}
+                        {selectedTechnologies.length > 0 && (
+                            <div className="selected-technologies">
+                                {selectedTechnologies.map(tech => (
+                                    <span key={tech.id} className="tech-tag">
+                                        {tech.name}
+                                        <button
+                                            type="button"
+                                            className="tech-remove"
+                                            onClick={() => removeTechnology(tech.id)}
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div className="modal-actions">

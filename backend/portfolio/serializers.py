@@ -14,6 +14,12 @@ class ProjectSerializer(serializers.ModelSerializer):
         а повні об'єкти (завдяки 'TechnologySerializer(many=True)').
         """
     technologies = TechnologySerializer(many=True, read_only=True)
+    technology_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False,
+        allow_empty=True
+    )
     username = serializers.CharField(source='profile.user.username', read_only=True)
     profile_picture = serializers.ImageField(source='profile.profile_picture', read_only=True)
 
@@ -24,12 +30,33 @@ class ProjectSerializer(serializers.ModelSerializer):
         # Ми будемо фільтрувати за профілем у View.
         fields = [
             'id', 'profile', 'username', 'profile_picture', 'title', 'description', 'image', 'github_link',
-            'live_link', 'views', 'created_at', 'technologies'
+            'live_link', 'views', 'created_at', 'technologies', 'technology_ids'
         ]
         extra_kwargs = {
             'profile': {'read_only': True},
             'views': {'read_only': True}
         }
+
+    def create(self, validated_data):
+        technology_ids = validated_data.pop('technology_ids', [])
+        project = Project.objects.create(**validated_data)
+        if technology_ids:
+            project.technologies.set(technology_ids)
+        return project
+
+    def update(self, instance, validated_data):
+        technology_ids = validated_data.pop('technology_ids', None)
+        
+        # Update basic fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+        # Update technologies if provided
+        if technology_ids is not None:
+            instance.technologies.set(technology_ids)
+        
+        return instance
 
 
 class ExperienceSerializer(serializers.ModelSerializer):
