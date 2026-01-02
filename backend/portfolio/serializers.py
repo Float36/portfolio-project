@@ -62,17 +62,23 @@ class ProjectSerializer(serializers.ModelSerializer):
 class ExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Experience
-        fields = ['id', 'company', 'role', 'start_date',
+        fields = ['id', 'profile', 'company', 'role', 'start_date',
             'end_date', 'description'
         ]
+        extra_kwargs = {
+            'profile': {'read_only': True}
+        }
 
 
 class EducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
         fields = [
-            'id', 'institution', 'degree', 'field_of_study',
+            'id', 'profile', 'institution', 'degree', 'field_of_study',
             'start_date', 'end_date'
         ]
+        extra_kwargs = {
+            'profile': {'read_only': True}
+        }
 
 

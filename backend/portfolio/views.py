@@ -147,9 +147,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
 
 class ExperienceViewSet(viewsets.ModelViewSet):
-    queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Experience.objects.all()
+        username = self.request.query_params.get('username')
+        if username:
+            queryset = queryset.filter(profile__user__username=username)
+        return queryset
 
     def perform_create(self, serializer):
         """

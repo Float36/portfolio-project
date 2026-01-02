@@ -8,6 +8,7 @@ const PublicProfile = () => {
     const { username } = useParams();
     const [profile, setProfile] = useState(null);
     const [projects, setProjects] = useState([]);
+    const [experiences, setExperiences] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -22,8 +23,11 @@ const PublicProfile = () => {
                 const profileRes = await api.get(`profiles/by-username/${username}/`);
                 setProfile(profileRes.data);
 
-                // Initial project fetch
+                // Fetch projects
                 await fetchProjects(`projects/?username=${username}`);
+
+                // Fetch experiences
+                await fetchExperiences(username);
             } catch (err) {
                 console.error(err);
                 if (err.response && err.response.status === 404) {
@@ -52,6 +56,21 @@ const PublicProfile = () => {
         } catch (err) {
             console.error("Error fetching projects:", err);
         }
+    };
+
+    const fetchExperiences = async (username) => {
+        try {
+            const response = await api.get(`experience/?username=${username}`);
+            setExperiences(response.data);
+        } catch (err) {
+            console.error("Error fetching experiences:", err);
+        }
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Теперішній час';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('uk-UA', { year: 'numeric', month: 'long' });
     };
 
     if (loading) return <div className="loading-container">Завантаження...</div>;
@@ -100,6 +119,38 @@ const PublicProfile = () => {
                     </div>
                 )}
             </section>
+
+            {/* Experience Section */}
+            {experiences.length > 0 && (
+                <section className="profile-experience" style={{ maxWidth: '800px', margin: '0 auto 60px' }}>
+                    <h2 style={{ fontSize: '2rem', marginBottom: '30px', textAlign: 'center' }}>Досвід роботи</h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        {experiences.map(exp => (
+                            <div key={exp.id} style={{
+                                background: 'var(--bg-secondary)',
+                                padding: '20px',
+                                borderRadius: '12px',
+                                border: '1px solid var(--border)'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                    <div style={{ flex: 1 }}>
+                                        <h3 style={{ margin: '0 0 5px 0', color: 'var(--text-primary)', fontSize: '1.3rem' }}>{exp.role}</h3>
+                                        <p style={{ margin: '0 0 10px 0', color: 'var(--accent)', fontWeight: '500' }}>{exp.company}</p>
+                                        <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                                            {formatDate(exp.start_date)} - {formatDate(exp.end_date)}
+                                        </p>
+                                        {exp.description && (
+                                            <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                                                {exp.description}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* Pagination Controls */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '50px' }}>
