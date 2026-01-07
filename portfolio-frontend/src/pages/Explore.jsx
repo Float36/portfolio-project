@@ -46,10 +46,7 @@ const Explore = () => {
       fetchProjects();
     }, 500); // Debounce duration
 
-    // Expose fetchProjects for pagination buttons (closure trick not optimal here, better redesign if complex)
-    // Actually, simpler to just use state for CURRENT URL or PAGE, 
-    // but next/prev URLs come fully formed from DRF.
-    // Let's attach handlers to buttons that call fetchProjects with specific URL.
+
     window.fetchProjectsPage = fetchProjects;
 
     return () => {

@@ -120,6 +120,28 @@ const PublicProfile = () => {
                 )}
             </section>
 
+
+
+            {/* Pagination Controls */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '50px' }}>
+                <button
+                    disabled={!prevPage}
+                    onClick={() => fetchProjects(prevPage)}
+                    className="profile-link"
+                    style={{ opacity: !prevPage ? 0.5 : 1, cursor: !prevPage ? 'default' : 'pointer', background: 'transparent' }}
+                >
+                    Назад
+                </button>
+                <button
+                    disabled={!nextPage}
+                    onClick={() => fetchProjects(nextPage)}
+                    className="profile-link"
+                    style={{ opacity: !nextPage ? 0.5 : 1, cursor: !nextPage ? 'default' : 'pointer', background: 'transparent' }}
+                >
+                    Далі
+                </button>
+            </div>
+
             {/* Experience Section */}
             {experiences.length > 0 && (
                 <section className="profile-experience" style={{ maxWidth: '800px', margin: '0 auto 60px' }}>
@@ -151,26 +173,6 @@ const PublicProfile = () => {
                     </div>
                 </section>
             )}
-
-            {/* Pagination Controls */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '50px' }}>
-                <button
-                    disabled={!prevPage}
-                    onClick={() => fetchProjects(prevPage)}
-                    className="profile-link"
-                    style={{ opacity: !prevPage ? 0.5 : 1, cursor: !prevPage ? 'default' : 'pointer', background: 'transparent' }}
-                >
-                    Назад
-                </button>
-                <button
-                    disabled={!nextPage}
-                    onClick={() => fetchProjects(nextPage)}
-                    className="profile-link"
-                    style={{ opacity: !nextPage ? 0.5 : 1, cursor: !nextPage ? 'default' : 'pointer', background: 'transparent' }}
-                >
-                    Далі
-                </button>
-            </div>
         </div>
     );
 };

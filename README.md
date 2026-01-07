@@ -342,14 +342,6 @@ curl -X POST http://127.0.0.1:8000/api/v1/projects/ \
 - `end_date` — дата закінчення (опціонально)
 - `description` — опис обов'язків
 
-#### Education
-- `profile` — профіль користувача (ForeignKey)
-- `institution` — навчальний заклад
-- `degree` — ступінь
-- `field_of_study` — спеціальність
-- `start_date` — дата початку
-- `end_date` — дата закінчення (опціонально)
-
 ### Діаграма зв'язків
 
 ```
@@ -358,8 +350,7 @@ User (Django) ──1:1── UserProfile
                          ├──1:N── Project ──N:M── Technology
                          │
                          ├──1:N── Experience
-                         │
-                         └──1:N── Education
+                         
 ```
 
 ---

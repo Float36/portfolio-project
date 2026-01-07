@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const Home = () => {
   return (
     <div className="container">
@@ -9,7 +11,9 @@ const Home = () => {
             DevHub — це платформа, де кожен розробник може створити власне портфоліо за лічені хвилини.
           </p>
           <div className="hero-btns">
-            <button className="btn-primary">Почати безкоштовно</button>
+              <Link to="/explore" className="btn-primary" style={{ textDecoration: 'none' }}>
+                  Почати безкоштовно
+              </Link>
           </div>
         </div>
         <div className="hero-avatar">

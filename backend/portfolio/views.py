@@ -145,23 +145,22 @@ class ProjectViewSet(viewsets.ModelViewSet):
         )
 
 
-
 class ExperienceViewSet(viewsets.ModelViewSet):
     serializer_class = ExperienceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        queryset = Experience.objects.all()
         username = self.request.query_params.get('username')
-        if username:
-            queryset = queryset.filter(profile__user__username=username)
-        return queryset
+
+        if username is not None:
+            return Experience.objects.filter(profile__user__username=username)
+
+        if self.request.user.is_authenticated:
+            return Experience.objects.filter(profile=self.request.user.profile)
+
+        return Experience.objects.none()
 
     def perform_create(self, serializer):
-        """
-        Автоматично прив'язуємо профіль залогіненого користувача
-        до нового проєкту.
-        """
         serializer.save(profile=self.request.user.profile)
 
 
